@@ -1,4 +1,11 @@
 {
+  "msg.mpnogaj.mchomes.waypoint": "Waypoint",
+  "msg.mpnogaj.mchomes.home": "Home",
+  "msg.mpnogaj.mchomes.name_already_taken": "This name (\"%s\") is already taken",
+  "msg.mpnogaj.mchomes.object_successfully_added": "%s - \"%s\", successfully added",
+  "msg.mpnogaj.mchomes.object_successfully_removed": "%s - \"%s\", successfully removed",
+  "msg.mpnogaj.mchomes.object_does_not_exist": "%s \"%s\" doesn't exists",
+  "msg.mpnogaj.mchomes.default_object_not_set": "Default %s is not set (maybe it's been removed)",
   "category.mpnogaj.mchomes.keybindings": "MC-Homes",
   "key.mpnogaj.mchomes.home_keybinding": "Teleport to default home",
   "key.mpnogaj.mchomes.waypoint_keybinding": "Teleport to default waypoint"

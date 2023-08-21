@@ -13,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Language;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,8 @@ public class HomesMain implements ModInitializer {
                             final var player = ctx.getSource().getPlayerOrThrow();
                             final var homeName = playerDefaultsController.getDefaultHomeName(player.getUuid());
                             if(homeName == null) {
-                                player.sendMessage(Text.literal(Resources.getDefaultObjectNotSet(Resources.HOME)));
+                                player.sendMessage(Text.translatable("msg.mpnogaj.mchomes.default_object_not_set",
+                                        getHomeTranslation().toLowerCase()));
                                 return Command.SINGLE_SUCCESS;
                             } else {
                                 return this.runHome(ctx, homeName);
@@ -79,7 +81,8 @@ public class HomesMain implements ModInitializer {
                             final var player = ctx.getSource().getPlayerOrThrow();
                             final var waypointName = playerDefaultsController.getDefaultWaypointName(player.getUuid());
                             if(waypointName == null) {
-                                player.sendMessage(Text.literal(Resources.getDefaultObjectNotSet(Resources.WAYPOINT)));
+                                player.sendMessage(Text.translatable("msg.mpnogaj.mchomes.default_object_not_set",
+                                        getWaypointTranslation().toLowerCase()));
                                 return Command.SINGLE_SUCCESS;
                             } else {
                                 return this.runWaypoint(ctx, waypointName);
@@ -112,17 +115,25 @@ public class HomesMain implements ModInitializer {
     }
 
     @Nullable
-    public static Waypoint getDefaultHome(PlayerEntity player) {
+    private static Waypoint getDefaultHome(PlayerEntity player) {
         final var playerDefaults = playerDefaultsController.getPlayerDefaults(player.getUuid());
         if(playerDefaults == null) return null;
         return playerWaypointsController.findHome(player, playerDefaults.defaultHome);
     }
 
     @Nullable
-    public static Waypoint getDefaultWaypoint(ServerPlayerEntity player) {
+    private static Waypoint getDefaultWaypoint(ServerPlayerEntity player) {
         final var playerDefaults = playerDefaultsController.getPlayerDefaults(player.getUuid());
         if(playerDefaults == null) return null;
         return globalWaypointsController.findWaypoint(playerDefaults.defaultWaypoint);
+    }
+
+    private String getHomeTranslation() {
+        return Language.getInstance().get("msg.mpnogaj.mchomes.home", "Home");
+    }
+
+    private String getWaypointTranslation() {
+        return Language.getInstance().get("msg.mpnogaj.mchomes.waypoint", "Waypoint");
     }
 
     private int runHome(CommandContext<ServerCommandSource> ctx, String homeName) throws CommandSyntaxException {
@@ -132,7 +143,9 @@ public class HomesMain implements ModInitializer {
         final var home = playerWaypointsController.findHome(player, homeName);
 
         if(home == null) {
-            player.sendMessage(Text.literal(Resources.getObjectNotFound(Resources.HOME, homeName)));
+            player.sendMessage(Text.translatable("msg.mpnogaj.mchomes.object_does_not_exist",
+                    getHomeTranslation(),
+                    homeName));
             return Command.SINGLE_SUCCESS;
         }
 
@@ -150,11 +163,13 @@ public class HomesMain implements ModInitializer {
 
 
         final var msg = switch (res) {
-            case SUCCESS -> Resources.getObjectSuccessfullyAdded(Resources.HOME, homeName);
-            case NAME_TAKEN -> Resources.getNameAlreadyTaken(homeName);
+            case SUCCESS -> Text.translatable("msg.mpnogaj.mchomes.object_successfully_added",
+                    getHomeTranslation(),
+                    homeName);
+            case NAME_TAKEN -> Text.translatable("msg.mpnogaj.mchomes.name_already_taken", homeName);
         };
 
-        player.sendMessage(Text.literal(msg));
+        player.sendMessage(msg);
 
 
         return Command.SINGLE_SUCCESS;
@@ -166,7 +181,9 @@ public class HomesMain implements ModInitializer {
         final var playerUUID = player.getUuid();
 
         if(playerWaypointsController.findHome(player, homeName) == null) {
-            player.sendMessage(Text.literal(Resources.getObjectNotFound(Resources.HOME, homeName)));
+            player.sendMessage(Text.translatable("msg.mpnogaj.mchomes.object_does_not_exist",
+                    getHomeTranslation(),
+                    homeName));
             return Command.SINGLE_SUCCESS;
         }
 
@@ -180,17 +197,16 @@ public class HomesMain implements ModInitializer {
         final var playerUUID = player.getUuid();
         final var res = playerWaypointsController.removeHome(player, homeName);
 
-
-        final var msg = res
-                ? Resources.getObjectSuccessfullyRemoved(Resources.HOME, homeName)
-                : Resources.getObjectNotFound(Resources.HOME, homeName);
-
         final var defaultHome = playerDefaultsController.getDefaultHomeName(playerUUID);
         if(defaultHome != null && defaultHome.equals(homeName)) {
             playerDefaultsController.removeDefaultHomeName(playerUUID);
         }
 
-        player.sendMessage(Text.literal(msg));
+        final var msg = res
+                ? Text.translatable("msg.mpnogaj.mchomes.object_successfully_removed", getHomeTranslation(), homeName)
+                : Text.translatable("msg.mpnogaj.mchomes.object_does_not_exist", getHomeTranslation(), homeName);
+
+        player.sendMessage(msg);
 
         return Command.SINGLE_SUCCESS;
     }
@@ -202,7 +218,9 @@ public class HomesMain implements ModInitializer {
         final var waypoint = globalWaypointsController.findWaypoint(waypointName);
 
         if(waypoint == null) {
-            player.sendMessage(Text.of(Resources.getObjectNotFound(Resources.WAYPOINT, waypointName)));
+            player.sendMessage(Text.translatable("msg.mpnogaj.mchomes.object_does_not_exist",
+                    getWaypointTranslation(),
+                    waypointName));
             return Command.SINGLE_SUCCESS;
         }
         waypoint.teleportPlayer(server, player);
@@ -218,11 +236,13 @@ public class HomesMain implements ModInitializer {
         final var res = globalWaypointsController.addWaypoint(waypoint);
 
         final var msg = switch (res) {
-            case SUCCESS -> Resources.getObjectSuccessfullyAdded(Resources.WAYPOINT, waypointName);
-            case NAME_TAKEN -> Resources.getNameAlreadyTaken(waypointName);
+            case SUCCESS -> Text.translatable("msg.mpnogaj.mchomes.object_successfully_added",
+                    getWaypointTranslation(),
+                    waypointName);
+            case NAME_TAKEN -> Text.translatable("msg.mpnogaj.mchomes.name_already_taken", waypointName);
         };
 
-        player.sendMessage(Text.literal(msg));
+        player.sendMessage(msg);
 
         return Command.SINGLE_SUCCESS;
     }
@@ -234,7 +254,9 @@ public class HomesMain implements ModInitializer {
 
 
         if(globalWaypointsController.findWaypoint(waypointName) == null) {
-            player.sendMessage(Text.literal(Resources.getObjectNotFound(Resources.WAYPOINT, waypointName)));
+            player.sendMessage(Text.translatable("msg.mpnogaj.mchomes.object_does_not_exist",
+                    getWaypointTranslation(),
+                    waypointName));
             return Command.SINGLE_SUCCESS;
         }
 
@@ -248,16 +270,16 @@ public class HomesMain implements ModInitializer {
         final var playerUUID = player.getUuid();
         final var res = globalWaypointsController.removeWaypoint(waypointName);
 
-        final var msg = res
-                ? Resources.getObjectSuccessfullyRemoved(Resources.WAYPOINT, waypointName)
-                : Resources.getObjectNotFound(Resources.WAYPOINT, waypointName);
-
         final var defaultWaypoint = playerDefaultsController.getDefaultWaypointName(playerUUID);
         if(defaultWaypoint != null && defaultWaypoint.equals(waypointName)) {
             playerDefaultsController.removeDefaultWaypointName(playerUUID);
         }
 
-        player.sendMessage(Text.literal(msg));
+        final var msg = res
+                ? Text.translatable("msg.mpnogaj.mchomes.object_successfully_removed", getWaypointTranslation(), waypointName)
+                : Text.translatable("msg.mpnogaj.mchomes.object_does_not_exist", getWaypointTranslation(), waypointName);
+
+        player.sendMessage(msg);
 
         return Command.SINGLE_SUCCESS;
     }
