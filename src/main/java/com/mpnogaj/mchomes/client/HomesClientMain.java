@@ -11,17 +11,17 @@ public class HomesClientMain implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        final var homeKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.mpnogaj.mchomes.home_keybinding",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_F23,
-                "category.mpnogaj.mchomes.keybindings"
-        ));
-
         final var waypointKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.mpnogaj.mchomes.waypoint_keybinding",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_F24,
+                "category.mpnogaj.mchomes.keybindings"
+        ));
+
+        final var homeKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.mpnogaj.mchomes.home_keybinding",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_F23,
                 "category.mpnogaj.mchomes.keybindings"
         ));
 
