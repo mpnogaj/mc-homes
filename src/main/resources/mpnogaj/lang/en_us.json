@@ -1,0 +1,8 @@
+{
+  "item.mpnogaj.home_stone": "Home stone",
+  "item.mpnogaj.waypoint_stone": "Waypoint stone",
+  "item.mpnogaj.stone_item.no_default": "Default target is not set",
+  "category.mpnogaj.mchomes.keybindings": "MC-Homes",
+  "key.mpnogaj.mchomes.home_keybinding": "Teleport to home",
+  "key.mpnogaj.mchomes.waypoint_keybinding": "Teleport to waypoint"
+}

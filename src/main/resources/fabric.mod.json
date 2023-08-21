@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "mc-homes",
+  "version": "${version}",
+  "name": "mc-homes",
+  "description": "Simple homes mod for minecraft",
+  "authors": [
+    "mpnogaj"
+  ],
+  "contact": {
+    "website": "https://github.com/mpnogaj/mc-homes",
+    "repo": "https://github.com/mpnogaj/mc-homes"
+  },
+  "license": "MIT",
+  "icon": "assets/mc-homes/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.mpnogaj.mchomes.client.HomesClientMain"
+    ],
+    "main": [
+      "com.mpnogaj.mchomes.HomesMain"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
