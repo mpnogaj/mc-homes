@@ -27,7 +27,15 @@ public class Waypoint {
 
     public void teleportPlayer(MinecraftServer server, PlayerEntity player) {
         final var world = worldPosition.getServerWorld(server);
-        player.teleport(world, worldPosition.x, worldPosition.y, worldPosition.z, new HashSet<>(), 0.0f, 0.0f);
+
+        player.teleport(world,
+                worldPosition.x,
+                worldPosition.y,
+                worldPosition.z,
+                new HashSet<>(),
+                worldPosition.yaw,
+                worldPosition.pitch);
+
         world.playSound(null,
                 worldPosition.x,
                 worldPosition.y,
